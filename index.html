@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Secret Gallery ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variabel Warna Utama (Mode Terang) */
+        :root { 
+            --pink: #ff8fa3; 
+            --red: #ff4d6d; 
+            --bg: #fff9fa; 
+            --card-bg: #ffffff;
+            --text-main: #444;
+            --text-sub: #777;
+            --nav-bg: rgba(255,255,255,0.9);
+        }
+
+        /* Mode Malam (Otomatis Aktif Jam 19:00 - 05:00) */
+        body.night-mode {
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text-main: #e94560;
+            --text-sub: #95a5a6;
+            --nav-bg: rgba(26, 26, 46, 0.9);
+            color: #fff;
+        }
+
+        body { margin: 0; font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text-main); transition: 0.5s; overflow-x: hidden; }
+        
+        .header { background: linear-gradient(135deg, #ffccd5, #fde2e4); padding: 40px 20px 70px; text-align: center; border-bottom: 5px solid #fff; }
+        body.night-mode .header { background: linear-gradient(135deg, #0f3460, #16213e); border-bottom: 5px solid #1a1a2e; }
+        
+        .header h1 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; margin: 0; color: var(--red); }
+        .start-date { font-size: 0.75rem; font-weight: 700; color: var(--red); background: white; display: inline-block; padding: 5px 15px; border-radius: 50px; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-transform: uppercase; }
+
+        /* Jam Digital */
+        .clock-container {
+            max-width: 300px; margin: -40px auto 20px; background: var(--card-bg);
+            padding: 15px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center; border: 1px solid rgba(255,255,255,0.3); position: relative; z-index: 10;
+        }
+        #digital-clock { font-size: 2rem; font-weight: 800; color: var(--red); letter-spacing: 2px; }
+
+        /* Fitur No. 2: Daily Compliment */
+        .daily-note {
+            max-width: 350px; margin: 10px auto; padding: 10px;
+            background: rgba(255, 143, 163, 0.1); border-radius: 12px;
+            font-size: 0.85rem; font-weight: 600; color: var(--red);
+            font-style: italic; border-left: 4px solid var(--red);
+        }
+
+        .nav { display: flex; justify-content: center; background: var(--nav-bg); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tab { padding: 15px; cursor: pointer; font-weight: 700; font-size: 0.7rem; color: #aaa; text-transform: uppercase; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--red); border-bottom: 3px solid var(--red); }
+
+        .main-container { max-width: 500px; margin: 20px auto; padding: 10px; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding: 20px 10px 40px; scrollbar-width: none; }
+        .slider::-webkit-scrollbar { display: none; }
+
+        .card { 
+            flex: 0 0 85%; scroll-snap-align: center; background: var(--card-bg); 
+            padding: 15px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            border: 8px solid var(--card-bg); text-align: center; box-sizing: border-box;
+        }
+        .img-container { width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 12px; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .badge { background: var(--pink); color: #fff; padding: 4px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; margin: 15px 0 5px; display: inline-block; }
+        .card h3 { font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--red); margin: 5px 0; }
+        .card p { font-size: 0.8rem; color: var(--text-sub); line-height: 1.4; }
+
+        .floating { position: fixed; pointer-events: none; z-index: -1; animation: floatUp 5s infinite linear; opacity: 0.6; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-10vh) rotate(360deg); } }
+        footer { text-align: center; padding: 40px 20px; font-size: 0.7rem; color: var(--red); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Our Little World</h1>
+    <div class="start-date">Since 06 09 2025</div>
+    <div class="daily-note" id="daily-compliment">Loading special note...</div>
+</div>
+
+<div class="clock-container">
+    <div id="digital-clock">00:00:00</div>
+    <div style="font-size: 0.6rem; color: #aaa; margin-top: 5px;" id="mode-text">Daylight Mode</div>
+</div>
+
+<div class="nav">
+    <div class="tab active" onclick="openTab(event, 'bf')">My King</div>
+    <div class="tab" onclick="openTab(event, 'gf')">My Queen</div>
+    <div class="tab" onclick="openTab(event, 'us')">Our Story</div>
+</div>
+
+<div class="main-container">
+    <div class="panel active" id="bf">
+        <div class="slider">
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=1AlWecSszRTa1L6_6f_9y5p0zbNC_p6vi&sz=w2000"></div>
+                <div class="badge">My Number One</div>
+                <h3>The Coolest Guy</h3>
+                <p>"I'm so proud to have you as my partner."</p>
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=1LmHqjcAYYRAiK9lheIzPiqeeVdT14hBY&sz=w2000"></div>
+                <div class="badge">Safe Place</div>
+                <h3>My Everything</h3>
+                <p>"Thank you for being my support system."</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" id="gf">
+        <div class="slider">
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=1tlLUG2k-LW-TiQfqR2uTlHfv8goinhHo&sz=w2000"></div>
+                <div class="badge">Pretty Soul</div>
+                <h3>The Sweetest Girl</h3>
+                <p>"Your smile is my favorite view."</p>
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=19pWC4FcLH4b_HZSlOE-ZaEVd9mf9QBAt&sz=w2000"></div>
+                <div class="badge">Literal Queen</div>
+                <h3>My Beautiful Half</h3>
+                <p>"You deserve all the happiness."</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" id="us">
+        <div class="slider">
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=11ZOtOEMvY2FR85ofX8PWY0vQRKxusNhq&sz=w2000"></div>
+                <h3>How It Started</h3>
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=1LckHCbkk-Vp4nEgwVu18eNeykVxTJNFH&sz=w2000"></div>
+                <h3>Joyful Moments</h3>
+            </div>
+            <div class="card">
+                <div class="img-container"><img src="https://drive.google.com/thumbnail?id=1Vpc7_6-VSpbrweXpUj4CRtqIAiMuE3UC&sz=w2000"></div>
+                <h3>Together</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer> MADE WITH LOVE </footer>
+
+<script>
+    // 1. FITUR DAILY COMPLIMENT (No. 2)
+    const compliments = [
+        "Minggu: Waktunya istirahat bareng orang favoritku! ",
+        "Senin: Semangat ya hari ini! sayanggg !!!",
+        "Selasa: Jangan lupa senyum, sayanggg !!!",
+        "Rabu: Kamu hebat sudah bertahan sejauh ini ",
+        "Kamis: Sayang banget sama kamu, jangan lupa makan ya! 🌸",
+        "Jumat: Yeeay bentar lagi weekend sayangggg !!",
+        "Sabtu: Hari ini kamu cantik / ganteng banget! "
+    ];
+
+    function setDailyCompliment() {
+        const day = new Date().getDay();
+        document.getElementById('daily-compliment').innerText = compliments[day];
+    }
+
+    // 2. FITUR AUTO DARK MODE (No. 3)
+    function checkNightMode() {
+        const hour = new Date().getHours();
+        const isNight = hour >= 19 || hour < 5; // Jam 7 malam sampai 5 pagi
+        if (isNight) {
+            document.body.classList.add('night-mode');
+            document.getElementById('mode-text').innerText = "Night Mode Active ";
+        } else {
+            document.body.classList.remove('night-mode');
+            document.getElementById('mode-text').innerText = "Daylight Mode Active ";
+        }
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('digital-clock').innerText = `${h}:${m}:${s}`;
+        checkNightMode(); // Cek mode setiap detik biar akurat
+    }
+
+    function openTab(evt, name) {
+        var i, panel, tab;
+        panel = document.getElementsByClassName("panel");
+        for (i = 0; i < panel.length; i++) { panel[i].classList.remove("active"); }
+        tab = document.getElementsByClassName("tab");
+        for (i = 0; i < tab.length; i++) { tab[i].classList.remove("active"); }
+        document.getElementById(name).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    function createFloater() {
+        const icons = ['❤️', '💖', '✨', '🌸', '🌹'];
+        const h = document.createElement('div');
+        h.className = 'floating';
+        h.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        h.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 5000);
+    }
+
+    // Jalankan Semua Fungsi
+    setInterval(updateClock, 1000);
+    setInterval(createFloater, 400);
+    setDailyCompliment();
+    updateClock();
+</script>
+</body>
+</html>
